@@ -1,0 +1,24 @@
+---
+/**
+ * Символ саудовского риала. Взят из их же меню: заведение использует
+ * новый знак, а не буквенное «SAR». Идёт маской, чтобы наследовать цвет текста.
+ */
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<span class:list={['riyal', cls]} role="img" aria-label="SAR"></span>
+
+<style>
+  .riyal {
+    display: inline-block;
+    inline-size: 0.62em;
+    block-size: 0.62em;
+    vertical-align: -0.02em;
+    background-color: currentColor;
+    -webkit-mask: url('/brand/riyal.png') no-repeat center / contain;
+    mask: url('/brand/riyal.png') no-repeat center / contain;
+  }
+</style>

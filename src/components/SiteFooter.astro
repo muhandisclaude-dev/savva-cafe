@@ -1,0 +1,106 @@
+---
+import Wordmark from './Wordmark.astro';
+import { t } from '../i18n';
+import { venue } from '../data/venue';
+---
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <Wordmark class="foot-mark" />
+      <p class="foot-tagline">
+        <span data-lang="ar">{venue.tagline.ar}</span>
+        <span data-lang="en">{venue.tagline.en}</span>
+      </p>
+    </div>
+
+    <div class="foot-cols">
+      <div class="foot-col">
+        <p class="kicker">
+          <span data-lang="ar">{t.visitTitle.ar}</span>
+          <span data-lang="en">{t.visitTitle.en}</span>
+        </p>
+        <p class="foot-line">
+          <span data-lang="ar">{venue.address.ar}</span>
+          <span data-lang="en">{venue.address.en}</span>
+        </p>
+        <a href={`tel:${venue.phone}`} class="foot-line foot-link tnum">{venue.phoneDisplay}</a>
+      </div>
+
+      <div class="foot-col">
+        <p class="kicker">
+          <span data-lang="ar">تابعنا</span>
+          <span data-lang="en">Follow</span>
+        </p>
+        <a href={venue.instagram} class="foot-line foot-link" target="_blank" rel="noopener">Instagram</a>
+        <a href={venue.tiktok} class="foot-line foot-link" target="_blank" rel="noopener">TikTok</a>
+        <a href={venue.maps} class="foot-line foot-link" target="_blank" rel="noopener">
+          <span class="tnum">{venue.rating}</span>
+          <span data-lang="ar"> {t.ratingOn.ar}</span>
+          <span data-lang="en"> {t.ratingOn.en}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot-demo">
+    <span data-lang="ar">{t.demoFooter.ar}</span>
+    <span data-lang="en">{t.demoFooter.en}</span>
+  </p>
+</footer>
+
+<style>
+  .foot {
+    padding-block: clamp(3rem, 8vh, 5rem) 1.5rem;
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    border-block-start: 1px solid var(--sand-line);
+  }
+
+  .foot-inner {
+    max-inline-size: 74rem;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .foot-brand { display: flex; flex-direction: column; gap: 1.1rem; }
+  /* Тот же случай, что и в первом экране: логотип вставлен через set:html */
+  :global(.foot-mark) { inline-size: min(100%, 13rem); block-size: auto; color: var(--color-sand); opacity: 0.9; }
+  .foot-tagline {
+    margin: 0;
+    max-inline-size: 26ch;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--sand-dim);
+  }
+
+  .foot-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+  .foot-col { display: flex; flex-direction: column; gap: 0.45rem; }
+  .foot-col .kicker { margin-block-end: 0.35rem; }
+
+  .foot-line { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--sand-dim); }
+  .foot-link { transition: color 0.3s var(--ease-drift); }
+  .foot-link:hover { color: var(--color-sand); }
+
+  .foot-demo {
+    max-inline-size: 74rem;
+    margin: clamp(2.5rem, 6vh, 4rem) auto 0;
+    padding-block-start: 1.2rem;
+    border-block-start: 1px solid var(--sand-line-soft);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand-faint);
+  }
+  html[dir='rtl'] .foot-demo { letter-spacing: 0; text-transform: none; }
+
+  @media (max-width: 860px) {
+    .foot-inner { grid-template-columns: 1fr; }
+  }
+</style>

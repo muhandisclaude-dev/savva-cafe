@@ -1,0 +1,238 @@
+---
+import { t } from '../i18n';
+import { venue } from '../data/venue';
+---
+
+<section class="book" id="book" aria-labelledby="book-title">
+  <div class="spine book-spine" aria-hidden="true"></div>
+
+  <div class="book-head">
+    <p class="kicker">
+      <span data-lang="ar">{t.bookTitle.ar}</span>
+      <span data-lang="en">{t.bookTitle.en}</span>
+    </p>
+    <h2 class="book-title" id="book-title">
+      <span data-lang="ar">{t.bookLead.ar}</span>
+      <span data-lang="en">{t.bookLead.en}</span>
+    </h2>
+  </div>
+
+  <form class="book-form" data-booking-form novalidate>
+    <div class="book-grid">
+      <div>
+        <label class="label" for="book-date">
+          <span data-lang="ar">{t.bookDate.ar}</span>
+          <span data-lang="en">{t.bookDate.en}</span>
+        </label>
+        <input id="book-date" name="date" type="date" class="field" required />
+      </div>
+
+      <div>
+        <label class="label" for="book-guests">
+          <span data-lang="ar">{t.bookGuests.ar}</span>
+          <span data-lang="en">{t.bookGuests.en}</span>
+        </label>
+        <select id="book-guests" name="guests" class="field" required>
+          {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option value={n} selected={n === 2}>{n}</option>)}
+        </select>
+      </div>
+
+      <fieldset class="book-areas">
+        <legend class="label">
+          <span data-lang="ar">{t.bookArea.ar}</span>
+          <span data-lang="en">{t.bookArea.en}</span>
+        </legend>
+        {
+          venue.areas.map((a, i) => (
+            <label class="pill">
+              <input type="radio" name="area" value={a.id} checked={i === 0} />
+              <span data-lang="ar">{a.label.ar}</span>
+              <span data-lang="en">{a.label.en}</span>
+            </label>
+          ))
+        }
+      </fieldset>
+    </div>
+
+    <div class="book-slots-wrap">
+      <span class="label">
+        <span data-lang="ar">{t.bookTime.ar}</span>
+        <span data-lang="en">{t.bookTime.en}</span>
+      </span>
+      <div class="book-slots" data-slots role="radiogroup" aria-labelledby="book-title"></div>
+      <p class="book-noslots" data-noslots hidden>
+        <span data-lang="ar">{t.bookNoSlots.ar}</span>
+        <span data-lang="en">{t.bookNoSlots.en}</span>
+      </p>
+    </div>
+
+    <div class="book-grid">
+      <div>
+        <label class="label" for="book-name">
+          <span data-lang="ar">{t.bookName.ar}</span>
+          <span data-lang="en">{t.bookName.en}</span>
+        </label>
+        <input id="book-name" name="name" class="field" required autocomplete="name" />
+      </div>
+
+      <div>
+        <label class="label" for="book-phone">
+          <span data-lang="ar">{t.bookPhone.ar}</span>
+          <span data-lang="en">{t.bookPhone.en}</span>
+        </label>
+        <input
+          id="book-phone"
+          name="phone"
+          type="tel"
+          class="field"
+          required
+          autocomplete="tel"
+          inputmode="tel"
+          placeholder="05X XXX XXXX"
+        />
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-solid book-submit">
+      <span data-lang="ar">{t.bookSubmit.ar}</span>
+      <span data-lang="en">{t.bookSubmit.en}</span>
+    </button>
+
+    <p class="book-error" data-booking-error hidden role="alert"></p>
+  </form>
+
+  <div class="book-done" data-booking-done hidden>
+    <span class="book-done-mark" aria-hidden="true"></span>
+    <p class="book-done-title">
+      <span data-lang="ar">{t.doneBookTitle.ar}</span>
+      <span data-lang="en">{t.doneBookTitle.en}</span>
+    </p>
+    <p class="book-done-line" data-booking-summary></p>
+    <p class="book-demo">
+      <span data-lang="ar">{t.demoNotice.ar}</span>
+      <span data-lang="en">{t.demoNotice.en}</span>
+    </p>
+    <button type="button" class="btn" data-booking-again>
+      <span data-lang="ar">حجز آخر</span>
+      <span data-lang="en">Book another</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .book {
+    position: relative;
+    padding-block: clamp(3.5rem, 9vh, 6.5rem);
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    border-block-start: 1px solid var(--sand-line);
+  }
+
+  .book-head,
+  .book-form,
+  .book-done {
+    margin-left: var(--spine);
+    padding-inline: clamp(1.5rem, 4vw, 3.5rem);
+    max-inline-size: 42rem;
+  }
+
+  .book-head { display: flex; flex-direction: column; gap: 0.85rem; }
+  .book-title {
+    margin: 0;
+    font-size: clamp(1.35rem, 1.05rem + 1.5vw, 2.1rem);
+    font-weight: 300;
+    line-height: 1.35;
+  }
+
+  .book-form { display: flex; flex-direction: column; gap: 1.5rem; margin-block-start: 2.2rem; }
+  .book-form[hidden], .book-done[hidden] { display: none; }
+
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .book-areas { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: end; }
+  .book-areas legend { padding: 0; margin-block-end: 0.5rem; }
+
+  .book-slots-wrap { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .book-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(4.4rem, 1fr));
+    gap: 0.4rem;
+  }
+
+  .slot {
+    padding: 0.55rem 0.3rem;
+    border: 1px solid var(--sand-line);
+    font-family: var(--font-latin);
+    font-size: 0.85rem;
+    text-align: center;
+    color: var(--color-sand);
+    transition: background-color 0.25s var(--ease-drift), border-color 0.25s var(--ease-drift);
+  }
+  .slot:hover:not(:disabled) { background: color-mix(in srgb, var(--color-sand) 10%, transparent); }
+  .slot[aria-checked='true'] {
+    background: var(--color-sand);
+    color: var(--color-sage-dark);
+    border-color: var(--color-sand);
+  }
+  .slot:disabled {
+    color: var(--sand-faint);
+    border-style: dashed;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+
+  .book-noslots { margin: 0; color: var(--sand-dim); font-size: 0.9rem; }
+
+  .book-submit { align-self: flex-start; }
+  .book-submit[aria-busy='true'] { opacity: 0.65; pointer-events: none; }
+
+  .book-error { margin: 0; color: #f0c48a; font-size: 0.88rem; }
+  .book-error[hidden] { display: none; }
+
+  .book-done {
+    margin-block-start: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    border: 1px solid var(--sand-line);
+    padding: clamp(1.5rem, 4vw, 2.4rem);
+  }
+  html[dir='rtl'] .book-done { align-items: flex-end; text-align: end; }
+
+  .book-done-mark {
+    inline-size: 2.4rem;
+    block-size: 3.3rem;
+    background-color: var(--color-sand);
+    opacity: 0.55;
+    -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
+    mask: url('/brand/sprig.png') no-repeat center / contain;
+  }
+  .book-done-title { margin: 0; font-size: 1.25rem; }
+  .book-done-line { margin: 0; color: var(--color-sand); font-family: var(--font-latin); letter-spacing: 0.04em; }
+  .book-demo {
+    margin: 0.5rem 0 0;
+    max-inline-size: 40ch;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--sand-dim);
+    border-block-start: 1px solid var(--sand-line);
+    padding-block-start: 0.85rem;
+  }
+
+  @media (max-width: 860px) {
+    .book-spine { display: none; }
+    .book-head, .book-form, .book-done {
+      margin-left: 0;
+      padding-inline: 0;
+      max-inline-size: none;
+    }
+    .book-submit { align-self: stretch; }
+  }
+</style>

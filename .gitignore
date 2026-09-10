@@ -1,0 +1,16 @@
+# зависимости и сборка
+node_modules/
+dist/
+.astro/
+
+# инструментарий impeccable — не часть проекта
+.claude/agents/
+.claude/skills/
+.impeccable/
+
+# исходники от заказчика (данные уже в src/data/)
+منيو سافا .pdf
+photo_2026-09-10_19-05-47.jpg
+
+.DS_Store
+.claude/settings.json

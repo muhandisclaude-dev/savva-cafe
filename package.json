@@ -1,0 +1,16 @@
+{
+  "name": "savva-cafe",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 4322",
+    "build": "astro build",
+    "preview": "astro preview --port 4322"
+  },
+  "dependencies": {
+    "astro": "^5.14.1",
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14"
+  }
+}

@@ -1,0 +1,108 @@
+---
+import { t } from '../i18n';
+---
+
+<dialog class="sheet" data-item-dialog aria-labelledby="item-dialog-title">
+  <form method="dialog" class="sheet-dismiss">
+    <button
+      type="submit"
+      class="sheet-close"
+      data-label-ar={t.close.ar}
+      data-label-en={t.close.en}
+      aria-label={t.close.ar}>×</button>
+  </form>
+
+  <div class="sheet-body">
+    <p class="kicker">
+      <span data-lang="ar">{t.itemOptions.ar}</span>
+      <span data-lang="en">{t.itemOptions.en}</span>
+    </p>
+
+    <h3 class="sheet-title" id="item-dialog-title" data-dialog-name></h3>
+    <p class="sheet-note" data-dialog-note hidden></p>
+
+    <div class="sheet-groups" data-dialog-groups></div>
+
+    <div class="sheet-foot">
+      <span class="sheet-price tnum" data-dialog-price></span>
+      <button type="button" class="btn btn-solid" data-dialog-confirm>
+        <span data-lang="ar">{t.addTo.ar}</span>
+        <span data-lang="en">{t.addTo.en}</span>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .sheet {
+    border: 1px solid var(--sand-line);
+    background: var(--color-sage-deep);
+    color: var(--color-sand);
+    padding: 0;
+    inline-size: min(30rem, calc(100vw - 2rem));
+    max-block-size: min(85dvh, 44rem);
+    margin: auto;
+  }
+  .sheet::backdrop {
+    background: color-mix(in srgb, #3c4034 72%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .sheet[open] { animation: sheet-in 0.32s var(--ease-drift); }
+  @keyframes sheet-in {
+    from { opacity: 0; transform: translateY(0.8rem); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .sheet-dismiss { position: absolute; inset-block-start: 0; inset-inline-end: 0; margin: 0; }
+  .sheet-close {
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--sand-dim);
+    transition: color 0.3s var(--ease-drift);
+  }
+  .sheet-close:hover { color: var(--color-sand); }
+
+  .sheet-body {
+    padding: clamp(1.4rem, 4vw, 2.1rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .sheet-title {
+    margin: 0;
+    font-size: clamp(1.3rem, 1.1rem + 1vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .sheet-note { margin: 0; color: var(--sand-dim); font-size: 0.88rem; line-height: 1.55; }
+
+  .sheet-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin-block-start: 0.4rem;
+    overflow-y: auto;
+  }
+
+  .sheet-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-start: 0.6rem;
+    padding-block-start: 1.1rem;
+    border-block-start: 1px solid var(--sand-line);
+  }
+
+  .sheet-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    font-size: 1.4rem;
+    font-family: var(--font-latin);
+  }
+</style>

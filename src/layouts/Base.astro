@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+import { venue } from '../data/venue';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#7D8269" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&family=Gelasio:wght@400&family=Readex+Pro:wght@200;300;400;500&display=swap"
+    />
+
+    <script is:inline>
+      // Язык восстанавливается до первой отрисовки, иначе на арабском сайте
+      // мигнёт английская раскладка и наоборот.
+      (function () {
+        try {
+          var saved = localStorage.getItem('savva.lang');
+          if (saved === 'en' || saved === 'ar') {
+            document.documentElement.lang = saved;
+            document.documentElement.dir = saved === 'ar' ? 'rtl' : 'ltr';
+          }
+        } catch (e) {
+          /* приватное окно — остаёмся на арабском по умолчанию */
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a href="#menu" class="sr-only">
+      <span data-lang="ar">تخطَّ إلى القائمة</span>
+      <span data-lang="en">Skip to the menu</span>
+    </a>
+
+    <slot />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CafeOrCoffeeShop',
+        name: 'SAVVA',
+        alternateName: 'ساڤا',
+        telephone: venue.phoneDisplay,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Zubairah Al Roumiah, Bir Uthman',
+          addressLocality: 'Madinah',
+          postalCode: '42331',
+          addressCountry: 'SA',
+        },
+        servesCuisine: 'Coffee',
+        priceRange: '6–27 SAR',
+        sameAs: [venue.instagram, venue.tiktok],
+      })}
+    />
+  </body>
+</html>

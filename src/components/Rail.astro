@@ -1,0 +1,177 @@
+---
+import { t } from '../i18n';
+import { sections } from '../data/menu';
+
+const links = [
+  { href: '#menu', key: 'navMenu' as const },
+  { href: '#brew', key: 'navBrew' as const },
+  { href: '#place', key: 'navPlace' as const },
+  { href: '#book', key: 'navBook' as const },
+  { href: '#visit', key: 'navVisit' as const },
+];
+---
+
+<nav class="rail" aria-label="SAVVA">
+  <a href="#top" class="rail-brand">
+    <span class="rail-brand-ar">ساڤا</span>
+    <span class="rail-brand-en">SAVVA</span>
+  </a>
+
+  <div class="rail-scroll">
+    <ul class="rail-links" role="list">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} class="rail-link" data-rail-link={l.href}>
+              <span data-lang="ar">{t[l.key].ar}</span>
+              <span data-lang="en">{t[l.key].en}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <ul class="rail-courses" role="list">
+      {
+        sections.map((s) => (
+          <li>
+            <a href={`#s-${s.id}`} class="rail-link" data-rail-link={`#s-${s.id}`}>
+              <span data-lang="ar">{s.title.ar}</span>
+              <span data-lang="en">{s.title.en}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="rail-actions">
+    <button
+      type="button"
+      class="rail-lang"
+      data-lang-switch
+      data-label-ar={t.switchLabel.ar}
+      data-label-en={t.switchLabel.en}
+      aria-label={t.switchLabel.ar}
+    >
+      <span data-lang="ar">{t.switchTo.ar}</span>
+      <span data-lang="en">{t.switchTo.en}</span>
+    </button>
+
+    <button
+      type="button"
+      class="rail-cart"
+      data-cart-open
+      data-label-ar={t.orderOpen.ar}
+      data-label-en={t.orderOpen.en}
+      aria-label={t.orderOpen.ar}
+    >
+      <span data-lang="ar">{t.orderTitle.ar}</span>
+      <span data-lang="en">{t.orderTitle.en}</span>
+      <span class="rail-count tnum" data-cart-count hidden>0</span>
+    </button>
+  </div>
+</nav>
+
+<style>
+  .rail {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 20;
+    block-size: var(--rail-h);
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 2rem);
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    background: color-mix(in srgb, var(--color-sage) 88%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-block-end: 1px solid var(--sand-line-soft);
+  }
+
+  .rail-brand { display: flex; align-items: baseline; gap: 0.5rem; flex: none; }
+  .rail-brand-ar { font-family: var(--font-arabic); font-size: 1.05rem; }
+  .rail-brand-en {
+    font-family: var(--font-latin);
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    color: var(--sand-faint);
+  }
+
+  .rail-scroll {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.75rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rail-scroll::-webkit-scrollbar { display: none; }
+
+  .rail-links,
+  .rail-courses {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 1.6vw, 1.5rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: none;
+  }
+  /* Разделы дублируют навигацию, поэтому на широком экране прячем один список */
+  .rail-courses { display: none; }
+
+  .rail-link {
+    white-space: nowrap;
+    font-size: 0.82rem;
+    color: var(--sand-dim);
+    padding-block: 0.35rem;
+    border-block-end: 1px solid transparent;
+    transition: color 0.3s var(--ease-drift), border-color 0.3s var(--ease-drift);
+  }
+  .rail-link:hover { color: var(--color-sand); }
+  .rail-link[aria-current='true'] { color: var(--color-sand); border-block-end-color: var(--color-sand); }
+
+  .rail-actions { display: flex; align-items: center; gap: 0.5rem; flex: none; }
+
+  .rail-lang {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--sand-dim);
+    padding: 0.4rem 0.6rem;
+    border: 1px solid transparent;
+    transition: color 0.3s var(--ease-drift), border-color 0.3s var(--ease-drift);
+  }
+  .rail-lang:hover { color: var(--color-sand); border-color: var(--sand-line); }
+
+  .rail-cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--sand-line);
+    color: var(--color-sand);
+    transition: background-color 0.3s var(--ease-drift);
+  }
+  .rail-cart:hover { background: color-mix(in srgb, var(--color-sand) 10%, transparent); }
+
+  .rail-count {
+    min-inline-size: 1.3rem;
+    padding-inline: 0.3rem;
+    text-align: center;
+    background: var(--color-sand);
+    color: var(--color-sage-dark);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 860px) {
+    .rail-links { display: none; }
+    .rail-courses { display: flex; }
+    .rail-cart { padding-inline: 0.7rem; font-size: 0.75rem; }
+    .rail-count[hidden] { display: none; }
+  }
+</style>

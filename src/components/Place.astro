@@ -1,0 +1,188 @@
+---
+import { t } from '../i18n';
+import { venue } from '../data/venue';
+import { photos } from '../data/photos';
+---
+
+<section class="place" id="place" aria-labelledby="place-title">
+  <div class="place-head">
+    <p class="kicker">
+      <span data-lang="ar">{t.placeTitle.ar}</span>
+      <span data-lang="en">{t.placeTitle.en}</span>
+    </p>
+    <h2 class="place-title" id="place-title">
+      <span data-lang="ar">{t.placeLead.ar}</span>
+      <span data-lang="en">{t.placeLead.en}</span>
+    </h2>
+
+    <dl class="place-facts">
+      <div>
+        <dt class="tnum">{venue.seats}</dt>
+        <dd>
+          <span data-lang="ar">مقعدًا</span>
+          <span data-lang="en">seats</span>
+        </dd>
+      </div>
+      <div>
+        <dt class="tnum">{venue.rating}</dt>
+        <dd>
+          <span data-lang="ar">{venue.reviews} {t.reviewsWord.ar}</span>
+          <span data-lang="en">from {venue.reviews} {t.reviewsWord.en}</span>
+        </dd>
+      </div>
+      <div>
+        <dt class="tnum">02:00</dt>
+        <dd>
+          <span data-lang="ar">حتى الفجر تقريبًا</span>
+          <span data-lang="en">we stay open late</span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  {
+    photos.length > 0 ? (
+      <Fragment>
+        <ul class="place-grid" role="list">
+          {photos.map((p) => (
+            <li class:list={['place-cell', p.feature && 'place-cell-wide']}>
+              <img
+                src={p.src}
+                width={p.width}
+                height={p.height}
+                alt={p.alt.ar}
+                data-alt-ar={p.alt.ar}
+                data-alt-en={p.alt.en}
+                loading="lazy"
+                decoding="async"
+              />
+            </li>
+          ))}
+        </ul>
+        <p class="place-credit">
+          <span data-lang="ar">الصور من حساب المقهى ‎@savva_cafe</span>
+          <span data-lang="en">Photos from the café’s own account, @savva_cafe</span>
+        </p>
+      </Fragment>
+    ) : (
+      <div class="place-pending">
+        <span class="place-pending-mark" aria-hidden="true" />
+        <p class="place-pending-title">
+          <span data-lang="ar">{t.photosSoon.ar}</span>
+          <span data-lang="en">{t.photosSoon.en}</span>
+        </p>
+        <p class="place-pending-body">
+          <span data-lang="ar">{t.photosSoonBody.ar}</span>
+          <span data-lang="en">{t.photosSoonBody.en}</span>
+        </p>
+        <a class="btn place-pending-link" href={venue.instagram} target="_blank" rel="noopener">
+          <span data-lang="ar">شاهد الحساب</span>
+          <span data-lang="en">See the account</span>
+        </a>
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .place {
+    padding-block: clamp(3.5rem, 9vh, 6.5rem);
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+  }
+
+  .place-head {
+    max-inline-size: 74rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .place-title {
+    margin: 0;
+    max-inline-size: 30ch;
+    font-size: clamp(1.35rem, 1.05rem + 1.5vw, 2.1rem);
+    font-weight: 300;
+    line-height: 1.35;
+  }
+
+  .place-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    margin: 1.4rem 0 0;
+    padding-block-start: 1.4rem;
+    border-block-start: 1px solid var(--sand-line);
+  }
+  .place-facts > div { display: flex; flex-direction: column; gap: 0.15rem; }
+  .place-facts dt {
+    font-family: var(--font-latin);
+    font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.6rem);
+    font-weight: 300;
+    line-height: 1;
+  }
+  .place-facts dd {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--sand-dim);
+  }
+
+  /* ── Сетка снимков ───────────────────────────────────────── */
+  .place-grid {
+    list-style: none;
+    margin: clamp(2rem, 5vh, 3.5rem) auto 0;
+    padding: 0;
+    max-inline-size: 74rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: 0.75rem;
+  }
+  .place-cell { margin: 0; overflow: hidden; }
+  .place-cell-wide { grid-column: span 2; }
+  .place-cell img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+    display: block;
+    transition: transform 0.7s var(--ease-drift);
+  }
+  .place-cell:hover img { transform: scale(1.03); }
+
+  .place-credit {
+    max-inline-size: 74rem;
+    margin: 1rem auto 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--sand-faint);
+  }
+
+  /* ── Пока снимков нет: честное состояние, не серый прямоугольник ── */
+  .place-pending {
+    max-inline-size: 74rem;
+    margin: clamp(2rem, 5vh, 3.5rem) auto 0;
+    border: 1px solid var(--sand-line);
+    padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.5rem, 5vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.65rem;
+  }
+  .place-pending-mark {
+    inline-size: 3.2rem;
+    block-size: 4.4rem;
+    background-color: var(--color-sand);
+    opacity: 0.3;
+    -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
+    mask: url('/brand/sprig.png') no-repeat center / contain;
+    margin-block-end: 0.4rem;
+  }
+  .place-pending-title { margin: 0; font-size: 1.15rem; }
+  .place-pending-body { margin: 0; max-inline-size: 42ch; color: var(--sand-dim); font-size: 0.9rem; line-height: 1.6; }
+  .place-pending-link { margin-block-start: 0.9rem; font-size: 0.85rem; }
+
+  @media (max-width: 640px) {
+    .place-cell-wide { grid-column: span 1; }
+  }
+</style>

@@ -1,0 +1,251 @@
+---
+import Riyal from './Riyal.astro';
+import { t } from '../i18n';
+import { venue } from '../data/venue';
+---
+
+<dialog class="tray" data-cart-dialog aria-labelledby="tray-title">
+  <header class="tray-head">
+    <h2 class="tray-title" id="tray-title">
+      <span data-lang="ar">{t.orderTitle.ar}</span>
+      <span data-lang="en">{t.orderTitle.en}</span>
+    </h2>
+    <form method="dialog">
+      <button
+        type="submit"
+        class="tray-close"
+        data-label-ar={t.close.ar}
+        data-label-en={t.close.en}
+        aria-label={t.close.ar}>×</button>
+    </form>
+  </header>
+
+  <!-- Состояние 1: пусто -->
+  <div class="tray-empty" data-tray-empty>
+    <span class="tray-empty-mark" aria-hidden="true"></span>
+    <p class="tray-empty-title">
+      <span data-lang="ar">{t.orderEmpty.ar}</span>
+      <span data-lang="en">{t.orderEmpty.en}</span>
+    </p>
+    <p class="tray-empty-hint">
+      <span data-lang="ar">{t.orderEmptyHint.ar}</span>
+      <span data-lang="en">{t.orderEmptyHint.en}</span>
+    </p>
+  </div>
+
+  <!-- Состояние 2: состав и форма -->
+  <div class="tray-main" data-tray-main hidden>
+    <ul class="tray-lines" role="list" data-tray-lines></ul>
+
+    <div class="tray-total">
+      <span class="kicker">
+        <span data-lang="ar">{t.orderTotal.ar}</span>
+        <span data-lang="en">{t.orderTotal.en}</span>
+      </span>
+      <span class="tray-total-num tnum" data-tray-total><Riyal />0</span>
+    </div>
+
+    <form class="tray-form" data-order-form novalidate>
+      <fieldset class="tray-modes">
+        <legend class="label">
+          <span data-lang="ar">{t.orderWhere.ar}</span>
+          <span data-lang="en">{t.orderWhere.en}</span>
+        </legend>
+        <label class="pill">
+          <input type="radio" name="mode" value="dine-in" checked />
+          <span data-lang="ar">{t.orderDineIn.ar}</span>
+          <span data-lang="en">{t.orderDineIn.en}</span>
+        </label>
+        <label class="pill">
+          <input type="radio" name="mode" value="takeaway" />
+          <span data-lang="ar">{t.orderTakeaway.ar}</span>
+          <span data-lang="en">{t.orderTakeaway.en}</span>
+        </label>
+      </fieldset>
+
+      <div data-table-field>
+        <label class="label" for="order-table">
+          <span data-lang="ar">{t.orderTable.ar}</span>
+          <span data-lang="en">{t.orderTable.en}</span>
+        </label>
+        <input id="order-table" name="table" class="field" inputmode="numeric" required maxlength="3" />
+      </div>
+
+      <div>
+        <label class="label" for="order-note">
+          <span data-lang="ar">{t.orderNote.ar}</span>
+          <span data-lang="en">{t.orderNote.en}</span>
+        </label>
+        <textarea
+          id="order-note"
+          name="note"
+          class="field"
+          rows="2"
+          data-ph-ar={t.orderNotePlaceholder.ar}
+          data-ph-en={t.orderNotePlaceholder.en}
+          placeholder={t.orderNotePlaceholder.ar}></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-solid tray-submit">
+        <span data-lang="ar">{t.orderSubmit.ar}</span>
+        <span data-lang="en">{t.orderSubmit.en}</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Состояние 3: подтверждение -->
+  <div class="tray-done" data-tray-done hidden>
+    <span class="tray-done-mark" aria-hidden="true"></span>
+    <p class="tray-done-title">
+      <span data-lang="ar">{t.doneOrderTitle.ar}</span>
+      <span data-lang="en">{t.doneOrderTitle.en}</span>
+    </p>
+    <p class="tray-done-ref">
+      <span class="kicker">
+        <span data-lang="ar">{t.doneNumber.ar}</span>
+        <span data-lang="en">{t.doneNumber.en}</span>
+      </span>
+      <strong class="tnum" data-done-ref></strong>
+    </p>
+    <p class="tray-demo">
+      <span data-lang="ar">{t.demoNotice.ar}</span>
+      <span data-lang="en">{t.demoNotice.en}</span>
+    </p>
+    <button type="button" class="btn tray-back" data-tray-back>
+      <span data-lang="ar">{t.doneBack.ar}</span>
+      <span data-lang="en">{t.doneBack.en}</span>
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .tray {
+    border: 0;
+    border-inline-start: 1px solid var(--sand-line);
+    background: var(--color-sage-deep);
+    color: var(--color-sand);
+    padding: 0;
+    margin: 0;
+    margin-inline-start: auto;
+    inline-size: min(27rem, 100vw);
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    flex-direction: column;
+  }
+  /* Без этого display:flex перебивает браузерное display:none у закрытого диалога */
+  .tray[open] { display: flex; }
+
+  .tray::backdrop {
+    background: color-mix(in srgb, #3c4034 66%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .tray[open] { animation: tray-in 0.36s var(--ease-drift); }
+  @keyframes tray-in {
+    from { transform: translateX(var(--tray-from, 100%)); }
+    to   { transform: none; }
+  }
+  html[dir='rtl'] .tray { --tray-from: -100%; }
+
+  .tray-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-block-end: 1px solid var(--sand-line);
+    flex: none;
+  }
+  .tray-title { margin: 0; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.02em; }
+  .tray-close {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--sand-dim);
+  }
+  .tray-close:hover { color: var(--color-sand); }
+
+  /* ── Пусто ───────────────────────────────────────────────── */
+  .tray-empty,
+  .tray-done {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 2rem 1.5rem;
+  }
+  .tray-empty[hidden], .tray-done[hidden], .tray-main[hidden] { display: none; }
+
+  .tray-empty-mark,
+  .tray-done-mark {
+    inline-size: 3.4rem;
+    block-size: 4.6rem;
+    background-color: var(--color-sand);
+    opacity: 0.28;
+    -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
+    mask: url('/brand/sprig.png') no-repeat center / contain;
+    margin-block-end: 0.4rem;
+  }
+  .tray-done-mark { opacity: 0.62; }
+
+  .tray-empty-title, .tray-done-title { margin: 0; font-size: 1.1rem; }
+  .tray-empty-hint { margin: 0; color: var(--sand-dim); font-size: 0.88rem; max-inline-size: 22ch; }
+
+  /* ── Состав ──────────────────────────────────────────────── */
+  .tray-main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+  .tray-lines { list-style: none; margin: 0; padding: 0 1.25rem; }
+
+  .tray-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-block: 1px solid var(--sand-line);
+  }
+  .tray-total-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    font-family: var(--font-latin);
+    font-size: 1.5rem;
+  }
+
+  .tray-form { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem; }
+
+  .tray-modes { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tray-modes legend { padding: 0; margin-block-end: 0.5rem; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--sand-line);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease-drift), border-color 0.3s var(--ease-drift);
+  }
+  .pill input { accent-color: var(--color-sand); margin: 0; }
+  .pill:has(input:checked) { background: color-mix(in srgb, var(--color-sand) 13%, transparent); border-color: var(--sand-dim); }
+
+  .tray-submit { inline-size: 100%; margin-block-start: 0.25rem; }
+  .tray-submit[aria-busy='true'] { opacity: 0.65; pointer-events: none; }
+
+  .tray-done-ref { margin: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+  .tray-done-ref strong { font-size: 1.6rem; font-weight: 400; letter-spacing: 0.1em; }
+
+  .tray-demo {
+    margin: 0.4rem 0 0;
+    max-inline-size: 28ch;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--sand-dim);
+    border-block-start: 1px solid var(--sand-line);
+    padding-block-start: 0.9rem;
+  }
+  .tray-back { margin-block-start: 0.6rem; }
+</style>

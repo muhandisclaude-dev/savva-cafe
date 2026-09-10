@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Rail from '../components/Rail.astro';
+import Menu from '../components/Menu.astro';
+import BrewBar from '../components/BrewBar.astro';
+import Place from '../components/Place.astro';
+import Booking from '../components/Booking.astro';
+import Visit from '../components/Visit.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ItemDialog from '../components/ItemDialog.astro';
+import CartPanel from '../components/CartPanel.astro';
+---
+
+<Base
+  title="ساڤا · SAVVA — قهوة مختصة في المدينة المنورة"
+  description="قائمة ساڤا: قهوة مختصة، تقطير V60، حلى وفطور. بئر عثمان، المدينة المنورة. Specialty coffee in Madinah."
+>
+  <Hero />
+  <Rail />
+  <main>
+    <Menu />
+    <BrewBar />
+    <Place />
+    <Booking />
+    <Visit />
+  </main>
+  <SiteFooter />
+
+  <ItemDialog />
+  <CartPanel />
+
+  <script>
+    import '../scripts/app.ts';
+  </script>
+</Base>

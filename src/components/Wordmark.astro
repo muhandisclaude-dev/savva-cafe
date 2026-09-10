@@ -1,0 +1,13 @@
+---
+/** Логотип ساڤا · SAVVA — вектор, извлечённый из официального PDF заведения. */
+import raw from '../assets/brand/wordmark.svg?raw';
+
+interface Props {
+  class?: string;
+  label?: string;
+}
+const { class: cls = '', label = 'SAVVA · ساڤا' } = Astro.props;
+const svg = raw.replace('<svg ', `<svg class="${cls}" aria-label="${label}" `);
+---
+
+<Fragment set:html={svg} />
