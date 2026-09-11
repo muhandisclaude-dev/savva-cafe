@@ -1,6 +1,7 @@
 ---
 import Riyal from './Riyal.astro';
 import { t } from '../i18n';
+import { withBase } from '../lib/asset';
 import { itemById, basePrice } from '../data/menu';
 import { photos, menuShots, type PhotoKey } from '../data/photos';
 
@@ -42,7 +43,7 @@ const cards = picks
           <li class="best-card">
             <figure class="best-figure" data-photo-lift>
               <img
-                src={`/photos/${c.photo.file}`}
+                src={withBase(`/photos/${c.photo.file}`)}
                 width={c.photo.width}
                 height={c.photo.height}
                 alt={c.photo.alt.ar}

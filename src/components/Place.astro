@@ -1,5 +1,6 @@
 ---
 import { t } from '../i18n';
+import { withBase } from '../lib/asset';
 import { venue } from '../data/venue';
 import { photos, roomGallery } from '../data/photos';
 
@@ -48,7 +49,7 @@ const gallery = roomGallery.map((key) => photos[key]);
         <li class:list={['room-cell', i === 0 && 'room-cell-wide']}>
           <figure data-photo-lift>
             <img
-              src={`/photos/${p.file}`}
+              src={withBase(`/photos/${p.file}`)}
               width={p.width}
               height={p.height}
               alt={p.alt.ar}

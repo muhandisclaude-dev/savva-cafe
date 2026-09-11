@@ -1,5 +1,6 @@
 ---
 import { t } from '../i18n';
+import { withBase } from '../lib/asset';
 import { photos } from '../data/photos';
 
 const beats = [
@@ -47,7 +48,7 @@ const beats = [
       <div class="beat" id={`beat-${beat.id}`}>
         <figure class="beat-photo" data-photo-lift>
           <img
-            src={`/photos/${beat.photo.file}`}
+            src={withBase(`/photos/${beat.photo.file}`)}
             width={beat.photo.width}
             height={beat.photo.height}
             alt={beat.photo.alt.ar}

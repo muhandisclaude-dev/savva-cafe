@@ -3,15 +3,17 @@ import Wordmark from './Wordmark.astro';
 import { t } from '../i18n';
 import { isOpenNow } from '../data/venue';
 import { photos } from '../data/photos';
+import { withBase } from '../lib/asset';
 
 const openAtBuild = isOpenNow();
 const hero = photos.heroNight;
+const dappleStyle = `--dapple-src:url('${withBase('/brand/dapple-a.png')}')`;
 ---
 
 <header class="hero" id="top">
   <figure class="hero-photo" data-photo-lift>
     <img
-      src={`/photos/${hero.file}`}
+      src={withBase(`/photos/${hero.file}`)}
       width={hero.width}
       height={hero.height}
       alt={hero.alt.ar}
@@ -20,7 +22,7 @@ const hero = photos.heroNight;
       fetchpriority="high"
     />
     <div class="hero-scrim" aria-hidden="true"></div>
-    <div class="dapple-glow" data-dapple aria-hidden="true" style="--dapple-src:url('/brand/dapple-a.png')"></div>
+    <div class="dapple-glow" data-dapple aria-hidden="true" style={dappleStyle}></div>
   </figure>
 
   <div class="hero-body">

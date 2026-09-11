@@ -258,8 +258,8 @@
     margin-inline-end: 0.18em;
     vertical-align: -0.02em;
     background-color: currentColor;
-    -webkit-mask: url('/brand/riyal.png') no-repeat center / contain;
-    mask: url('/brand/riyal.png') no-repeat center / contain;
+    -webkit-mask: var(--riyal-src) no-repeat center / contain;
+    mask: var(--riyal-src) no-repeat center / contain;
   }
 
   .pill input {

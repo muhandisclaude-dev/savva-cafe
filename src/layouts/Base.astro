@@ -1,12 +1,21 @@
 ---
 import '../styles/global.css';
 import { venue } from '../data/venue';
+import { withBase } from '../lib/asset';
 
 interface Props {
   title: string;
   description: string;
 }
 const { title, description } = Astro.props;
+
+// GitHub Pages отдаёт сайт из подпапки — маски в CSS не умеют читать
+// import.meta.env.BASE_URL сами, поэтому адреса брендовой графики
+// вычисляются один раз здесь и раздаются вниз через CSS-переменные.
+// Значение попадает прямо в HTML при сборке, JS для этого не нужен.
+const brandVars =
+  `--riyal-src:url('${withBase('/brand/riyal.png')}');` +
+  `--sprig-src:url('${withBase('/brand/sprig.png')}')`;
 ---
 
 <!doctype html>
@@ -45,7 +54,7 @@ const { title, description } = Astro.props;
     </script>
   </head>
 
-  <body>
+  <body style={brandVars}>
     <a href="#menu" class="sr-only">
       <span data-lang="ar">تخطَّ إلى القائمة</span>
       <span data-lang="en">Skip to the menu</span>

@@ -1,6 +1,7 @@
 ---
 import Riyal from './Riyal.astro';
 import { t } from '../i18n';
+import { withBase } from '../lib/asset';
 import { sections } from '../data/menu';
 import { photos } from '../data/photos';
 
@@ -11,7 +12,7 @@ const photo = photos.barCounter;
 <section class="brew" id="brew" aria-labelledby="brew-title">
   <figure class="brew-photo" data-photo-lift>
     <img
-      src={`/photos/${photo.file}`}
+      src={withBase(`/photos/${photo.file}`)}
       width={photo.width}
       height={photo.height}
       alt={photo.alt.ar}
