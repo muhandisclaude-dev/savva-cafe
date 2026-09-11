@@ -2,57 +2,65 @@
 import Wordmark from './Wordmark.astro';
 import { t } from '../i18n';
 import { isOpenNow } from '../data/venue';
+import { photos } from '../data/photos';
 
-// Отрисовывается на сборке, клиент уточняет по времени Медины сразу после загрузки
 const openAtBuild = isOpenNow();
+const hero = photos.heroNight;
 ---
 
 <header class="hero" id="top">
-  <div class="dapple hero-dapple" aria-hidden="true"></div>
-  <div class="spine hero-spine" aria-hidden="true"></div>
+  <figure class="hero-photo" data-photo-lift>
+    <img
+      src={`/photos/${hero.file}`}
+      width={hero.width}
+      height={hero.height}
+      alt={hero.alt.ar}
+      data-alt-ar={hero.alt.ar}
+      data-alt-en={hero.alt.en}
+      fetchpriority="high"
+    />
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="dapple-glow" data-dapple aria-hidden="true" style="--dapple-src:url('/brand/dapple-a.png')"></div>
+  </figure>
 
-  <div class="hero-identity">
-    <Wordmark class="hero-mark" />
-    <span class="hero-coffee">{t.brandCoffee.en}</span>
-    <span class="hero-branch" aria-hidden="true"></span>
+  <div class="hero-body">
+    <div class="hero-mark reveal">
+      <Wordmark class="hero-mark-svg" />
+      <span class="hero-coffee">{t.brandCoffee.en}</span>
+    </div>
+
+    <div class="hero-say">
+      <p class="kicker reveal reveal-delay-1">
+        <span data-lang="ar">{t.heroLead.ar}</span>
+        <span data-lang="en">{t.heroLead.en}</span>
+      </p>
+
+      <p class="hero-status reveal reveal-delay-2" data-status aria-live="polite">
+        <span class="dot" data-open={String(openAtBuild)} aria-hidden="true"></span>
+        <span data-status-word>
+          <span data-lang="ar">{openAtBuild ? t.openNow.ar : t.closedNow.ar}</span>
+          <span data-lang="en">{openAtBuild ? t.openNow.en : t.closedNow.en}</span>
+        </span>
+        <span class="hero-status-sep" aria-hidden="true">·</span>
+        <span data-status-hours>
+          <span data-lang="ar">{openAtBuild ? t.closesAt.ar : t.opensAt.ar}</span>
+          <span data-lang="en">{openAtBuild ? t.closesAt.en : t.opensAt.en}</span>
+        </span>
+      </p>
+
+      <a href="#menu" class="btn btn-solid hero-cta reveal reveal-delay-3">
+        <span data-lang="ar">{t.navMenu.ar}</span>
+        <span data-lang="en">{t.navMenu.en}</span>
+      </a>
+    </div>
   </div>
 
-  <div class="hero-say">
-    <p class="kicker hero-lead">
-      <span data-lang="ar">{t.heroLead.ar}</span>
-      <span data-lang="en">{t.heroLead.en}</span>
-    </p>
-
-    <p class="hero-status" data-status aria-live="polite">
-      <span class="dot" data-open={String(openAtBuild)} aria-hidden="true"></span>
-      <span data-status-word>
-        <span data-lang="ar">{openAtBuild ? t.openNow.ar : t.closedNow.ar}</span>
-        <span data-lang="en">{openAtBuild ? t.openNow.en : t.closedNow.en}</span>
-      </span>
-      <span class="hero-status-sep" aria-hidden="true">·</span>
-      <span data-status-hours>
-        <span data-lang="ar">{openAtBuild ? t.closesAt.ar : t.opensAt.ar}</span>
-        <span data-lang="en">{openAtBuild ? t.closesAt.en : t.opensAt.en}</span>
-      </span>
-    </p>
-
-    <a href="#menu" class="btn btn-solid hero-cta">
-      <span data-lang="ar">{t.navMenu.ar}</span>
-      <span data-lang="en">{t.navMenu.en}</span>
-    </a>
-
-    <p class="hero-tag">
-      <span data-lang="ar">{t.demoFooter.ar}</span>
-      <span data-lang="en">{t.demoFooter.en}</span>
-    </p>
-  </div>
-
-  <a href="#menu" class="scroll-cue" aria-hidden="true" tabindex="-1">
+  <a href="#story" class="scroll-cue" aria-hidden="true" tabindex="-1">
+    <span class="scroll-line"></span>
     <span class="kicker">
       <span data-lang="ar">{t.scrollCue.ar}</span>
       <span data-lang="en">{t.scrollCue.en}</span>
     </span>
-    <span class="scroll-line"></span>
   </a>
 </header>
 
@@ -61,206 +69,127 @@ const openAtBuild = isOpenNow();
     position: relative;
     min-block-size: 100dvh;
     display: grid;
-    grid-template-columns: var(--spine) 1fr;
-    align-items: stretch;
+    grid-template-rows: 1fr auto;
     overflow: hidden;
     isolation: isolate;
+    background: var(--color-ink);
   }
 
-  .hero-dapple {
-    --dapple-src: url('/brand/dapple-a.png');
-    block-size: 82%;
-    inset-block-end: auto;
-    /* Второй слой маски растворяет нижний край, иначе тень обрывается линейкой */
-    -webkit-mask-image: var(--dapple-src), linear-gradient(to bottom, #000 46%, transparent 96%);
-    mask-image: var(--dapple-src), linear-gradient(to bottom, #000 46%, transparent 96%);
-    -webkit-mask-size: cover, 100% 100%;
-    mask-size: cover, 100% 100%;
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-    animation: drift 96s var(--ease-drift) infinite alternate;
+  .hero-photo {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+  .hero-photo img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center 38%;
   }
 
-  /* Свет ходит по стене, как солнце за день. Ровно один жест на весь экран. */
-  @keyframes drift {
-    from { transform: translate3d(-2.5%, -1.5%, 0) scale(1.06); }
-    to   { transform: translate3d(3.5%, 2%, 0) scale(1.13); }
+  /* Фото не лежит на фоне — оно тонет в темноте у краёв, особенно снизу,
+     где текст и лента текста должны читаться поверх него */
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, var(--color-ink) 2%, color-mix(in srgb, var(--color-ink) 55%, transparent) 32%, transparent 62%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 75%, transparent) 0%, transparent 30%),
+      linear-gradient(to right, color-mix(in srgb, var(--color-ink) 55%, transparent) 0%, transparent 45%);
   }
 
-  /* В RTL первая дорожка сетки уходит вправо, поэтому меняем порядок дорожек:
-     колонка с логотипом остаётся слева, как на их печатном листе. */
-  html[dir='rtl'] .hero { grid-template-columns: 1fr var(--spine); }
-  html[dir='rtl'] .hero-identity { grid-column: 2; }
-  html[dir='rtl'] .hero-say { grid-column: 1; }
-
-  /* Логотип в верхней трети, ветка растёт под ним и уходит за нижний край —
-     ровно как на их печатном листе */
-  .hero-identity {
-    grid-column: 1;
-    grid-row: 1;
+  .hero-body {
+    position: relative;
+    z-index: 1;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0.9rem;
-    padding-inline: 6%;
-    padding-block-start: clamp(3.5rem, 13vh, 8rem);
-    z-index: 1;
+    gap: clamp(1.6rem, 4vh, 2.75rem);
+    padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) clamp(3.5rem, 9vh, 6rem);
+    text-align: center;
   }
 
-  /* SVG вставляется через set:html и не получает областной атрибут Astro,
-     поэтому селектор должен быть глобальным */
-  :global(.hero-mark) {
-    inline-size: min(74%, 20rem);
+  .hero-mark { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  :global(.hero-mark-svg) {
+    inline-size: min(52vw, 13rem);
     block-size: auto;
     color: var(--color-sand);
-    /* Марка проявляется первой: она — то, что человек держит в руке на кубике */
-    animation: mark-in 1.5s var(--ease-drift) both;
+    filter: drop-shadow(0 2px 24px color-mix(in srgb, var(--color-ink) 70%, transparent));
   }
-
-  @keyframes mark-in {
-    from { opacity: 0; transform: translateY(0.9rem); }
-    to   { opacity: 1; transform: none; }
-  }
-
   .hero-coffee {
-    font-family: var(--font-serif);
+    font-family: var(--font-latin);
     text-transform: uppercase;
-    letter-spacing: 0.34em;
-    /* Разрядка добавляет пустоту справа — компенсируем, чтобы строка стояла по центру */
-    text-indent: 0.34em;
-    font-size: clamp(0.72rem, 0.6rem + 0.5vw, 0.95rem);
-    color: var(--sand-dim);
-    animation: mark-in 1.5s 0.15s var(--ease-drift) both;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    font-size: clamp(0.62rem, 0.55rem + 0.4vw, 0.8rem);
+    color: var(--color-sage-bright);
   }
 
-  .hero-branch {
-    inline-size: min(112%, 24rem);
-    flex: none;
-    aspect-ratio: 903 / 1407;
-    margin-block-start: clamp(1rem, 3vh, 2.25rem);
-    background-color: var(--color-sand);
-    opacity: 0.42;
-    -webkit-mask: url('/brand/branch.png') no-repeat center bottom / contain;
-    mask: url('/brand/branch.png') no-repeat center bottom / contain;
-    /* Ветка вытирается снизу вверх, как будто её дорисовывают на глазах */
-    animation: branch-in 2.6s 0.3s var(--ease-drift) both;
-  }
-
-  @keyframes branch-in {
-    from { clip-path: inset(100% 0 0 0); }
-    to   { clip-path: inset(0 0 0 0); }
-  }
-
-  .hero-say {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1.6rem;
-    padding-inline: clamp(1.5rem, 5vw, 5rem);
-    z-index: 1;
-  }
-  /* flex-start сам разворачивается по направлению письма, отдельного правила не нужно */
-  .hero-say { text-align: start; }
-
-  .hero-lead { margin: 0; }
+  .hero-say { display: flex; flex-direction: column; align-items: center; gap: 1.3rem; }
+  .hero-say .kicker { justify-content: center; }
+  .hero-say .kicker::before { display: none; }
 
   .hero-status {
     margin: 0;
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    font-size: clamp(1.35rem, 1rem + 1.8vw, 2.4rem);
-    font-weight: 300;
-    line-height: 1.25;
-    color: var(--color-sand);
+    font-family: var(--font-latin-expanded);
+    font-size: clamp(1.5rem, 1.1rem + 2.4vw, 2.9rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--color-sand-warm);
   }
+  html[dir='rtl'] .hero-status { font-family: var(--font-arabic-display); font-weight: 500; }
 
   .dot {
-    inline-size: 0.42rem;
-    block-size: 0.42rem;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
     border-radius: 50%;
     background: var(--color-sand);
     opacity: 0.5;
     flex: none;
   }
   .dot[data-open='true'] {
+    background: var(--color-glow);
     opacity: 1;
-    animation: pulse 3.4s ease-in-out infinite;
+    box-shadow: 0 0 0.6rem color-mix(in srgb, var(--color-glow) 80%, transparent);
+    animation: pulse 3.2s ease-in-out infinite;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
-  .hero-status-sep { opacity: 0.4; }
+  .hero-status-sep { opacity: 0.45; font-family: var(--font-latin); font-weight: 400; }
 
-  .hero-cta {
-    padding-inline: clamp(2rem, 4vw, 3.5rem);
-    letter-spacing: 0.06em;
-  }
-
-  .hero-tag {
-    margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--sand-faint);
-  }
-  html[dir='rtl'] .hero-tag { letter-spacing: 0; text-transform: none; }
+  .hero-cta { padding-inline: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 0.04em; }
 
   .scroll-cue {
     position: absolute;
-    inset-block-end: 1.6rem;
+    z-index: 1;
+    inset-block-end: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.6rem;
-    z-index: 1;
+    gap: 0.7rem;
   }
-
   .scroll-line {
     inline-size: 1px;
-    block-size: 2.6rem;
+    block-size: 2.4rem;
     background: linear-gradient(to bottom, var(--sand-line), transparent);
+    animation: scroll-hint 2.4s ease-in-out infinite;
+  }
+  @keyframes scroll-hint {
+    0%, 100% { transform: scaleY(1); opacity: 0.7; }
+    50% { transform: scaleY(0.6); opacity: 1; }
   }
 
-  /* ── Телефон: колонки складываются, марка ведёт ───────────── */
-  @media (max-width: 860px) {
-    .hero {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr auto;
-      align-content: center;
-      gap: clamp(2rem, 8vh, 4rem);
-      padding-block: 5rem 4rem;
-    }
-    .hero-spine { display: none; }
-    html[dir='rtl'] .hero { grid-template-columns: 1fr; }
-    .hero-identity,
-    html[dir='rtl'] .hero-identity {
-      grid-column: 1;
-      grid-row: 1;
-      align-self: end;
-      justify-content: flex-end;
-      padding-block-start: 0;
-    }
-    html[dir='rtl'] .hero-say { grid-column: 1; }
-    .hero-say {
-      grid-column: 1;
-      grid-row: 2;
-      align-items: center;
-      text-align: center;
-      gap: 1.2rem;
-    }
-    html[dir='rtl'] .hero-say { align-items: center; text-align: center; }
-    :global(.hero-mark) { inline-size: min(62%, 15rem); }
-    .hero-branch { inline-size: min(52%, 11rem); opacity: 0.3; margin-block-start: 1rem; }
-    .hero-status { font-size: clamp(1.2rem, 5vw, 1.7rem); }
+  @media (max-width: 640px) {
+    .hero-body { padding-block-end: clamp(3rem, 12vh, 4.5rem); }
+    :global(.hero-mark-svg) { inline-size: min(56vw, 11rem); }
     .scroll-cue { display: none; }
   }
 </style>

@@ -4,6 +4,7 @@ import { isOpenNow } from '../data/venue';
 import { t } from '../i18n';
 import * as cart from '../lib/cart';
 import { submitOrder, submitBooking } from '../lib/submit';
+import { initMotion, refreshMotion } from '../lib/motion';
 
 type Lang = 'ar' | 'en';
 
@@ -48,6 +49,9 @@ function setLang(lang: Lang): void {
   applyLangAttributes(lang);
   renderTray();
   renderSlots();
+  // Смена языка перекраивает высоту почти всех блоков (RTL/LTR, длина строк) —
+  // триггеры прокрутки должны пересчитать свои позиции
+  document.dispatchEvent(new CustomEvent('savva:lang'));
 }
 
 function initLang(): void {
@@ -337,29 +341,52 @@ function initTray(): void {
   document.addEventListener('savva:cart', renderTray);
 }
 
-/* ══ Поиск по меню ══════════════════════════════════════════ */
+/* ══ Поиск и фильтр по разделам ═══════════════════════════════ */
+
+let activeTab = 'all';
+
+function applyMenuFilter(): void {
+  const input = $<HTMLInputElement>('#menu-q');
+  const q = (input?.value ?? '').trim().toLowerCase();
+  const emptyMsg = $('[data-empty]');
+  let shown = 0;
+
+  for (const course of $$<HTMLElement>('[data-course]')) {
+    const courseId = course.dataset.course!;
+    const tabMatch = activeTab === 'all' || activeTab === courseId;
+    let visibleInCourse = 0;
+
+    for (const card of $$<HTMLElement>('.card', course)) {
+      const hit = tabMatch && (!q || (card.dataset.search ?? '').includes(q));
+      card.hidden = !hit;
+      if (hit) visibleInCourse++;
+    }
+    course.hidden = visibleInCourse === 0;
+    shown += visibleInCourse;
+  }
+
+  if (emptyMsg) emptyMsg.hidden = shown > 0;
+  refreshMotion();
+}
 
 function initSearch(): void {
   const input = $<HTMLInputElement>('#menu-q');
-  if (!input) return;
-  const emptyMsg = $('[data-empty]');
+  input?.addEventListener('input', applyMenuFilter);
+}
 
-  input.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase();
-    let shown = 0;
+function initMenuTabs(): void {
+  const tabs = $$<HTMLButtonElement>('[data-tab]');
+  if (!tabs.length) return;
 
-    for (const course of $$('[data-course]')) {
-      let visibleInCourse = 0;
-      for (const row of $$<HTMLElement>('.row', course)) {
-        const hit = !q || (row.dataset.search ?? '').includes(q);
-        row.hidden = !hit;
-        if (hit) visibleInCourse++;
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activeTab = tab.dataset.tab!;
+      for (const t of tabs) t.setAttribute('aria-selected', String(t === tab));
+      applyMenuFilter();
+      if (activeTab !== 'all') {
+        document.getElementById(`s-${activeTab}`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
       }
-      course.hidden = visibleInCourse === 0;
-      shown += visibleInCourse;
-    }
-
-    if (emptyMsg) emptyMsg.hidden = shown > 0;
+    });
   });
 }
 
@@ -499,6 +526,16 @@ function initRailHighlight(): void {
   for (const { el } of targets) io.observe(el);
 }
 
+/* ══ Плотность верхней панели при прокрутке ══════════════════ */
+
+function initRailScrollState(): void {
+  const rail = $('[data-rail]');
+  if (!rail) return;
+  const paint = () => rail.setAttribute('data-scrolled', String(window.scrollY > 40));
+  paint();
+  window.addEventListener('scroll', paint, { passive: true });
+}
+
 /* ══ Запуск ═════════════════════════════════════════════════ */
 
 initLang();
@@ -509,5 +546,8 @@ initAddButtons();
 initFavourites();
 initTray();
 initSearch();
+initMenuTabs();
 initBooking();
 initRailHighlight();
+initRailScrollState();
+initMotion();

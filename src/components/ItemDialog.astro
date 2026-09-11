@@ -36,7 +36,7 @@ import { t } from '../i18n';
 <style>
   .sheet {
     border: 1px solid var(--sand-line);
-    background: var(--color-sage-deep);
+    background: var(--color-ink-2);
     color: var(--color-sand);
     padding: 0;
     inline-size: min(30rem, calc(100vw - 2rem));
@@ -44,7 +44,7 @@ import { t } from '../i18n';
     margin: auto;
   }
   .sheet::backdrop {
-    background: color-mix(in srgb, #3c4034 72%, transparent);
+    background: color-mix(in srgb, var(--color-ink) 78%, transparent);
     backdrop-filter: blur(3px);
   }
   .sheet[open] { animation: sheet-in 0.32s var(--ease-drift); }
@@ -74,8 +74,9 @@ import { t } from '../i18n';
   .sheet-title {
     margin: 0;
     font-size: clamp(1.3rem, 1.1rem + 1vw, 1.7rem);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.25;
+    color: var(--color-sand-warm);
   }
 
   .sheet-note { margin: 0; color: var(--sand-dim); font-size: 0.88rem; line-height: 1.55; }
@@ -104,5 +105,6 @@ import { t } from '../i18n';
     gap: 0.2em;
     font-size: 1.4rem;
     font-family: var(--font-latin);
+    color: var(--color-glow);
   }
 </style>

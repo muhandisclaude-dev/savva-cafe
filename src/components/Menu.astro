@@ -1,27 +1,46 @@
 ---
-import MenuRow from './MenuRow.astro';
+import MenuCard from './MenuCard.astro';
 import { t } from '../i18n';
 import { sections } from '../data/menu';
 ---
 
 <section class="menu" id="menu" aria-labelledby="menu-title">
-  <div class="spine menu-spine" aria-hidden="true"></div>
+  <div class="menu-head">
+    <p class="kicker">
+      <span data-lang="ar">القائمة</span>
+      <span data-lang="en">The menu</span>
+    </p>
+    <h2 class="sr-only" id="menu-title">{t.menuTitle.en}</h2>
 
-  <h2 class="sr-only" id="menu-title">{t.menuTitle.en}</h2>
+    <div class="menu-search">
+      <label class="sr-only" for="menu-q" data-label-ar={t.searchLabel.ar} data-label-en={t.searchLabel.en}>
+        {t.searchLabel.en}
+      </label>
+      <input
+        id="menu-q"
+        type="search"
+        class="field search-field"
+        autocomplete="off"
+        data-ph-ar={t.searchPlaceholder.ar}
+        data-ph-en={t.searchPlaceholder.en}
+        placeholder={t.searchPlaceholder.ar}
+      />
+    </div>
 
-  <div class="menu-search">
-    <label class="sr-only" for="menu-q" data-label-ar={t.searchLabel.ar} data-label-en={t.searchLabel.en}>
-      {t.searchLabel.en}
-    </label>
-    <input
-      id="menu-q"
-      type="search"
-      class="field search-field"
-      autocomplete="off"
-      data-ph-ar={t.searchPlaceholder.ar}
-      data-ph-en={t.searchPlaceholder.en}
-      placeholder={t.searchPlaceholder.ar}
-    />
+    <div class="menu-tabs" role="tablist" data-menu-tabs>
+      <button type="button" class="tab" data-tab="all" aria-selected="true">
+        <span data-lang="ar">الكل</span>
+        <span data-lang="en">All</span>
+      </button>
+      {
+        sections.map((s) => (
+          <button type="button" class="tab" data-tab={s.id} aria-selected="false">
+            <span data-lang="ar">{s.title.ar}</span>
+            <span data-lang="en">{s.title.en}</span>
+          </button>
+        ))
+      }
+    </div>
   </div>
 
   <p class="menu-empty" data-empty hidden>
@@ -38,17 +57,16 @@ import { sections } from '../data/menu';
   {
     sections.map((section) => (
       <div class="course" id={`s-${section.id}`} data-course={section.id}>
-        <div class="course-head">
-          <div class="course-title">
-            <span class="ct-ar">{section.title.ar}</span>
-            <span class="ct-en">{section.title.en}</span>
-          </div>
-          <span class="course-sprig" aria-hidden="true" />
+        <div class="course-head reveal">
+          <h3 class="h-display course-title">
+            <span data-lang="ar">{section.title.ar}</span>
+            <span data-lang="en">{section.title.en}</span>
+          </h3>
         </div>
 
-        <ul class="course-list" role="list">
+        <ul class="course-grid" role="list">
           {section.items.map((item) => (
-            <MenuRow item={item} />
+            <MenuCard item={item} />
           ))}
         </ul>
       </div>
@@ -59,132 +77,82 @@ import { sections } from '../data/menu';
 <style>
   .menu {
     position: relative;
+    background: var(--color-ink);
     padding-block: clamp(4rem, 9vh, 7rem) clamp(3rem, 7vh, 5rem);
     padding-inline: clamp(1.1rem, 4vw, 3rem);
   }
 
-  /* Линейка стоит на 41% ширины физически, поэтому и отступ физический */
-  .menu-search {
-    margin-left: var(--spine);
-    padding-inline: clamp(1.5rem, 4vw, 3.5rem);
-    max-inline-size: 26rem;
-    margin-block-end: clamp(2rem, 5vh, 3.5rem);
+  .menu-head {
+    max-inline-size: 74rem;
+    margin-inline: auto;
+    margin-block-end: clamp(2.5rem, 6vh, 4rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
   }
 
-  .search-field { background: transparent; border-inline: 0; border-block-start: 0; }
+  .menu-search { max-inline-size: 24rem; }
+  .search-field { background: transparent; border-inline: 0; border-block-start: 0; padding-inline: 0; }
+
+  .menu-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tab {
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--sand-line);
+    font-size: 0.85rem;
+    color: var(--sand-dim);
+    transition: background-color 0.3s var(--ease-drift), border-color 0.3s var(--ease-drift), color 0.3s var(--ease-drift);
+  }
+  .tab:hover { color: var(--color-sand); border-color: var(--sand-dim); }
+  .tab[aria-selected='true'] { background: var(--color-glow); color: var(--color-ink); border-color: var(--color-glow); }
 
   .menu-empty {
-    margin-left: var(--spine);
-    padding-inline: clamp(1.5rem, 4vw, 3.5rem);
+    max-inline-size: 74rem;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     padding-block: 2rem;
   }
-  .menu-empty strong { font-weight: 400; font-size: 1.1rem; }
+  .menu-empty strong { font-weight: 500; font-size: 1.1rem; }
   .menu-empty-hint { color: var(--sand-dim); font-size: 0.9rem; }
 
-  /* ── Раздел: заголовок в левой колонке, список в правой ──── */
   .course {
-    display: grid;
-    grid-template-columns: var(--spine) 1fr;
-    align-items: start;
-    padding-block-end: clamp(2.5rem, 6vh, 4.5rem);
+    max-inline-size: 74rem;
+    margin-inline: auto;
+    padding-block-end: clamp(3rem, 7vh, 5rem);
   }
   .course[hidden] { display: none; }
-  html[dir='rtl'] .course { grid-template-columns: 1fr var(--spine); }
-  html[dir='rtl'] .course-head { grid-column: 2; grid-row: 1; }
-  html[dir='rtl'] .course-list { grid-column: 1; grid-row: 1; }
 
   .course-head {
     position: sticky;
-    inset-block-start: calc(var(--rail-h) + 1.5rem);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 1rem;
-    padding-inline-end: clamp(1.5rem, 4vw, 3.5rem);
-    padding-block-start: 0.7rem;
+    inset-block-start: calc(var(--rail-h) + 1rem);
+    z-index: 2;
+    padding-block: 0.6rem;
+    margin-block-end: 1.3rem;
+    background: color-mix(in srgb, var(--color-ink) 88%, transparent);
+    backdrop-filter: blur(6px);
   }
-  html[dir='rtl'] .course-head {
-    align-items: flex-start;
-    padding-inline-end: 0;
-    padding-inline-start: clamp(1.5rem, 4vw, 3.5rem);
-  }
-
-  .course-title { display: flex; flex-direction: column; gap: 0.2rem; text-align: end; }
-  html[dir='rtl'] .course-title { text-align: start; }
-
-  .ct-ar, .ct-en { display: block; }
-  .ct-en {
-    font-family: var(--font-latin);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
+  .course-title {
+    margin: 0;
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem);
+    color: var(--color-sand-warm);
   }
 
-  html[lang='ar'] .ct-ar,
-  html[lang='en'] .ct-en {
-    font-size: clamp(1.3rem, 1.05rem + 1vw, 2rem);
-    font-weight: 300;
-    color: var(--color-sand);
-    line-height: 1.2;
-  }
-  html[lang='ar'] .ct-en,
-  html[lang='en'] .ct-ar {
-    font-size: 0.72rem;
-    color: var(--sand-faint);
-  }
-  html[lang='en'] .ct-en { order: -1; }
-
-  .course-sprig {
-    inline-size: 2.1rem;
-    block-size: 3rem;
-    background-color: var(--color-sand);
-    opacity: 0.3;
-    -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
-    mask: url('/brand/sprig.png') no-repeat center / contain;
-  }
-  html[dir='rtl'] .course-sprig { transform: scaleX(-1); }
-
-  .course-list {
+  .course-grid {
     list-style: none;
     margin: 0;
     padding: 0;
-    padding-inline-start: clamp(1.5rem, 4vw, 3.5rem);
-    /* Иначе на широком экране между названием и ценой зияет полметра пустоты
-       и строка перестаёт читаться как одно целое */
-    max-inline-size: 38rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    gap: clamp(0.9rem, 2vw, 1.5rem);
   }
 
-  /* ── Телефон: заголовок раздела становится липкой полосой ── */
-  @media (max-width: 860px) {
-    .menu-spine { display: none; }
-    .menu-search,
-    .menu-empty { margin-left: 0; padding-inline: 0; max-inline-size: none; }
-
-    .course,
-    html[dir='rtl'] .course { grid-template-columns: 1fr; padding-block-end: 2.5rem; }
-    html[dir='rtl'] .course-head { grid-column: 1; grid-row: 1; }
-    html[dir='rtl'] .course-list { grid-column: 1; grid-row: 2; }
-
-    .course-head {
-      position: sticky;
-      inset-block-start: var(--rail-h);
-      z-index: 2;
-      flex-direction: row;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.85rem 0 0.6rem;
-      background: var(--color-sage);
-      border-block-end: 1px solid var(--sand-line);
-      margin-block-end: 0.35rem;
-    }
-    html[dir='rtl'] .course-head { padding-inline: 0; }
-
-    .course-title { flex-direction: row; align-items: baseline; gap: 0.6rem; text-align: start; }
-    html[lang='ar'] .ct-ar, html[lang='en'] .ct-en { font-size: 1.15rem; }
-    .course-sprig { block-size: 1.6rem; inline-size: 1.2rem; }
-    .course-list { padding-inline-start: 0; }
+  @media (max-width: 640px) {
+    .course-head { inset-block-start: var(--rail-h); }
+    .course-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   }
 </style>

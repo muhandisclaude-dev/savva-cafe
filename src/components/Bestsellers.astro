@@ -1,0 +1,132 @@
+---
+import Riyal from './Riyal.astro';
+import { t } from '../i18n';
+import { itemById, basePrice } from '../data/menu';
+import { photos, menuShots, type PhotoKey } from '../data/photos';
+
+const picks: string[] = [
+  'coffee-of-day',
+  'savva-matcha',
+  'v60',
+  'ice-tea-savva',
+  'savva-melon',
+  'madini-cookies',
+];
+
+const cards = picks
+  .map((id) => {
+    const item = itemById.get(id);
+    const photoKey = menuShots[id] as PhotoKey | undefined;
+    if (!item || !photoKey) return null;
+    return { item, photo: photos[photoKey] };
+  })
+  .filter((c): c is NonNullable<typeof c> => c !== null);
+---
+
+<section class="best" aria-labelledby="best-title">
+  <div class="best-head">
+    <p class="kicker">
+      <span data-lang="ar">الأكثر طلبًا</span>
+      <span data-lang="en">Most ordered</span>
+    </p>
+    <h2 class="h-display best-title" id="best-title">
+      <span data-lang="ar">ما يطلبه الناس أولاً</span>
+      <span data-lang="en">What people order first</span>
+    </h2>
+  </div>
+
+  <div class="best-viewport">
+    <ul class="best-reel" data-reel role="list">
+      {
+        cards.map((c) => (
+          <li class="best-card">
+            <figure class="best-figure" data-photo-lift>
+              <img
+                src={`/photos/${c.photo.file}`}
+                width={c.photo.width}
+                height={c.photo.height}
+                alt={c.photo.alt.ar}
+                data-alt-ar={c.photo.alt.ar}
+                data-alt-en={c.photo.alt.en}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div class="best-info">
+              <div class="best-name">
+                <span class="bn-ar">{c.item.name.ar}</span>
+                <span class="bn-en">{c.item.name.en}</span>
+              </div>
+              <span class="best-price tnum">
+                <Riyal />
+                {basePrice(c.item)}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .best {
+    background: var(--color-ink);
+    padding-block: clamp(3.5rem, 9vh, 6rem) clamp(2rem, 5vh, 3rem);
+  }
+
+  .best-head {
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    max-inline-size: 74rem;
+    margin-inline: auto;
+    margin-block-end: clamp(2rem, 5vh, 3rem);
+  }
+  .best-title { margin: 0.6rem 0 0; font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.6rem); color: var(--color-sand-warm); }
+
+  .best-viewport { overflow: hidden; }
+
+  .best-reel {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    list-style: none;
+    margin: 0;
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    padding-block-end: 0.5rem;
+    width: max-content;
+  }
+
+  .best-card {
+    inline-size: clamp(13rem, 22vw, 17rem);
+    flex: none;
+  }
+
+  .best-figure {
+    margin: 0 0 0.9rem;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-ink-2);
+  }
+  .best-figure img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+  .best-info { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+
+  .best-name { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; }
+  .bn-en { font-family: var(--font-latin); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.72rem; color: var(--sand-faint); }
+  .bn-ar { font-size: 1.02rem; color: var(--color-sand); }
+  html[lang='en'] .bn-en { order: -1; font-size: 1rem; color: var(--color-sand); letter-spacing: 0.02em; text-transform: none; }
+  html[lang='en'] .bn-ar { font-size: 0.78rem; color: var(--sand-faint); }
+
+  .best-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    font-family: var(--font-latin);
+    font-size: 1.05rem;
+    color: var(--color-glow);
+    flex: none;
+  }
+
+  @media (max-width: 640px) {
+    .best-card { inline-size: 11rem; }
+  }
+</style>

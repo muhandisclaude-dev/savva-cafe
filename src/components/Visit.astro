@@ -2,11 +2,9 @@
 import { t } from '../i18n';
 import { venue } from '../data/venue';
 
-// Точные координаты заведения не подтверждены, поэтому карта ищет по тому же
-// адресу, что стоит в карточке Google. Ссылка «Маршрут» ведёт на их запись напрямую.
-const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
-  'Savva, Zubairah Al Roumiah, Bir Uthman, Madinah 42331',
-)}&hl=ar&z=16&output=embed`;
+// Точные координаты подтверждены вручную на карточке заведения в Google Картах.
+const COORDS = '24.4926931,39.5823565';
+const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(COORDS)}&hl=ar&z=17&output=embed`;
 ---
 
 <section class="visit" id="visit" aria-labelledby="visit-title">
@@ -17,31 +15,19 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
         <span data-lang="en">{t.visitTitle.en}</span>
       </p>
 
-      <h2 class="visit-title" id="visit-title">
+      <h2 class="h-display visit-title" id="visit-title">
         <span data-lang="ar">{venue.address.ar}</span>
         <span data-lang="en">{venue.address.en}</span>
       </h2>
 
       <dl class="visit-facts">
-        <dt>
-          <span data-lang="ar">{t.visitHours.ar}</span>
-          <span data-lang="en">{t.visitHours.en}</span>
-        </dt>
-        <dd>
-          <span data-lang="ar">{t.visitDaily.ar}</span>
-          <span data-lang="en">{t.visitDaily.en}</span>
-        </dd>
+        <dt><span data-lang="ar">{t.visitHours.ar}</span><span data-lang="en">{t.visitHours.en}</span></dt>
+        <dd><span data-lang="ar">{t.visitDaily.ar}</span><span data-lang="en">{t.visitDaily.en}</span></dd>
 
-        <dt>
-          <span data-lang="ar">{t.visitPhone.ar}</span>
-          <span data-lang="en">{t.visitPhone.en}</span>
-        </dt>
+        <dt><span data-lang="ar">{t.visitPhone.ar}</span><span data-lang="en">{t.visitPhone.en}</span></dt>
         <dd><a href={`tel:${venue.phone}`} class="visit-link tnum">{venue.phoneDisplay}</a></dd>
 
-        <dt>
-          <span data-lang="ar">{t.visitPlusCode.ar}</span>
-          <span data-lang="en">{t.visitPlusCode.en}</span>
-        </dt>
+        <dt><span data-lang="ar">{t.visitPlusCode.ar}</span><span data-lang="en">{t.visitPlusCode.en}</span></dt>
         <dd class="tnum">{venue.plusCode}</dd>
       </dl>
 
@@ -57,7 +43,7 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
       </div>
     </div>
 
-    <div class="visit-map">
+    <div class="visit-map reveal">
       <iframe
         src={mapEmbed}
         title="SAVVA on the map"
@@ -72,8 +58,8 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
   .visit {
     padding-block: clamp(3.5rem, 9vh, 6.5rem);
     padding-inline: clamp(1.1rem, 4vw, 3rem);
-    background: var(--color-sage-deep);
-    border-block-start: 1px solid var(--sand-line);
+    background: var(--color-ink-2);
+    border-block-start: 1px solid var(--sand-line-soft);
   }
 
   .visit-inner {
@@ -90,9 +76,8 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
   .visit-title {
     margin: 0;
     max-inline-size: 22ch;
-    font-size: clamp(1.3rem, 1.05rem + 1.4vw, 1.95rem);
-    font-weight: 300;
-    line-height: 1.4;
+    font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.1rem);
+    color: var(--color-sand-warm);
   }
 
   .visit-facts {
@@ -101,14 +86,14 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
     gap: 0.5rem 1.5rem;
     margin: 0.6rem 0 0;
     padding-block-start: 1.2rem;
-    border-block-start: 1px solid var(--sand-line);
+    border-block-start: 1px solid var(--sand-line-soft);
     align-items: baseline;
   }
   .visit-facts dt { font-size: 0.78rem; color: var(--sand-faint); }
   .visit-facts dd { margin: 0; font-size: 0.95rem; }
 
-  .visit-link { border-block-end: 1px solid var(--sand-line); transition: border-color 0.3s var(--ease-drift); }
-  .visit-link:hover { border-block-end-color: var(--color-sand); }
+  .visit-link { border-block-end: 1px solid var(--sand-line); transition: border-color 0.3s var(--ease-drift), color 0.3s var(--ease-drift); }
+  .visit-link:hover { border-block-end-color: var(--color-glow); color: var(--color-glow); }
 
   .visit-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-block-start: 0.8rem; }
   .visit-actions .btn { font-size: 0.88rem; padding-block: 0.75rem; }
@@ -123,8 +108,8 @@ const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(
     block-size: 100%;
     border: 0;
     display: block;
-    /* Карта Google приходит в своей палитре — приглушаем, чтобы она села в лист */
-    filter: grayscale(0.55) sepia(0.28) saturate(0.75) brightness(0.92) contrast(0.95);
+    /* Затемняем карту Google под ночную палитру сайта */
+    filter: grayscale(0.5) sepia(0.25) saturate(0.7) brightness(0.62) contrast(1.05) hue-rotate(-6deg);
   }
 
   @media (max-width: 860px) {

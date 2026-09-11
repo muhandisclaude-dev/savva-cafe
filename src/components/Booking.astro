@@ -4,14 +4,12 @@ import { venue } from '../data/venue';
 ---
 
 <section class="book" id="book" aria-labelledby="book-title">
-  <div class="spine book-spine" aria-hidden="true"></div>
-
   <div class="book-head">
     <p class="kicker">
       <span data-lang="ar">{t.bookTitle.ar}</span>
       <span data-lang="en">{t.bookTitle.en}</span>
     </p>
-    <h2 class="book-title" id="book-title">
+    <h2 class="h-display book-title" id="book-title">
       <span data-lang="ar">{t.bookLead.ar}</span>
       <span data-lang="en">{t.bookLead.en}</span>
     </h2>
@@ -122,47 +120,34 @@ import { venue } from '../data/venue';
 <style>
   .book {
     position: relative;
+    background: var(--color-ink);
     padding-block: clamp(3.5rem, 9vh, 6.5rem);
     padding-inline: clamp(1.1rem, 4vw, 3rem);
-    border-block-start: 1px solid var(--sand-line);
+    border-block-start: 1px solid var(--sand-line-soft);
   }
 
-  .book-head,
-  .book-form,
-  .book-done {
-    margin-left: var(--spine);
-    padding-inline: clamp(1.5rem, 4vw, 3.5rem);
+  .book-head, .book-form, .book-done {
     max-inline-size: 42rem;
+    margin-inline: auto;
   }
 
   .book-head { display: flex; flex-direction: column; gap: 0.85rem; }
   .book-title {
     margin: 0;
-    font-size: clamp(1.35rem, 1.05rem + 1.5vw, 2.1rem);
-    font-weight: 300;
-    line-height: 1.35;
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+    color: var(--color-sand-warm);
   }
 
   .book-form { display: flex; flex-direction: column; gap: 1.5rem; margin-block-start: 2.2rem; }
   .book-form[hidden], .book-done[hidden] { display: none; }
 
-  .book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
-    gap: 1rem;
-    align-items: end;
-  }
+  .book-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: 1rem; align-items: end; }
 
   .book-areas { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: end; }
   .book-areas legend { padding: 0; margin-block-end: 0.5rem; }
 
   .book-slots-wrap { display: flex; flex-direction: column; gap: 0.55rem; }
-
-  .book-slots {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(4.4rem, 1fr));
-    gap: 0.4rem;
-  }
+  .book-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.4rem, 1fr)); gap: 0.4rem; }
 
   .slot {
     padding: 0.55rem 0.3rem;
@@ -174,18 +159,8 @@ import { venue } from '../data/venue';
     transition: background-color 0.25s var(--ease-drift), border-color 0.25s var(--ease-drift);
   }
   .slot:hover:not(:disabled) { background: color-mix(in srgb, var(--color-sand) 10%, transparent); }
-  .slot[aria-checked='true'] {
-    background: var(--color-sand);
-    color: var(--color-sage-dark);
-    border-color: var(--color-sand);
-  }
-  .slot:disabled {
-    color: var(--sand-faint);
-    border-style: dashed;
-    cursor: not-allowed;
-    text-decoration: line-through;
-    text-decoration-thickness: 1px;
-  }
+  .slot[aria-checked='true'] { background: var(--color-glow); color: var(--color-ink); border-color: var(--color-glow); }
+  .slot:disabled { color: var(--sand-faint); border-style: dashed; cursor: not-allowed; text-decoration: line-through; text-decoration-thickness: 1px; }
 
   .book-noslots { margin: 0; color: var(--sand-dim); font-size: 0.9rem; }
 
@@ -202,6 +177,7 @@ import { venue } from '../data/venue';
     align-items: flex-start;
     gap: 0.6rem;
     border: 1px solid var(--sand-line);
+    background: var(--color-ink-2);
     padding: clamp(1.5rem, 4vw, 2.4rem);
   }
   html[dir='rtl'] .book-done { align-items: flex-end; text-align: end; }
@@ -209,30 +185,19 @@ import { venue } from '../data/venue';
   .book-done-mark {
     inline-size: 2.4rem;
     block-size: 3.3rem;
-    background-color: var(--color-sand);
-    opacity: 0.55;
+    background-color: var(--color-glow);
     -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
     mask: url('/brand/sprig.png') no-repeat center / contain;
   }
-  .book-done-title { margin: 0; font-size: 1.25rem; }
-  .book-done-line { margin: 0; color: var(--color-sand); font-family: var(--font-latin); letter-spacing: 0.04em; }
+  .book-done-title { margin: 0; font-size: 1.25rem; color: var(--color-sand-warm); }
+  .book-done-line { margin: 0; color: var(--color-glow); font-family: var(--font-latin); letter-spacing: 0.04em; }
   .book-demo {
     margin: 0.5rem 0 0;
     max-inline-size: 40ch;
     font-size: 0.8rem;
     line-height: 1.55;
     color: var(--sand-dim);
-    border-block-start: 1px solid var(--sand-line);
+    border-block-start: 1px solid var(--sand-line-soft);
     padding-block-start: 0.85rem;
-  }
-
-  @media (max-width: 860px) {
-    .book-spine { display: none; }
-    .book-head, .book-form, .book-done {
-      margin-left: 0;
-      padding-inline: 0;
-      max-inline-size: none;
-    }
-    .book-submit { align-self: stretch; }
   }
 </style>

@@ -1,0 +1,182 @@
+---
+import Riyal from './Riyal.astro';
+import { t } from '../i18n';
+import type { MenuItem } from '../data/menu';
+import { photos, menuShots, type PhotoKey } from '../data/photos';
+
+interface Props {
+  item: MenuItem;
+}
+const { item } = Astro.props;
+
+const priceLabel = Array.isArray(item.price) ? `${item.price[0]}–${item.price[1]}` : String(item.price);
+const hasOptions = (item.options?.length ?? 0) > 0;
+const searchKey = `${item.name.ar} ${item.name.en} ${item.originalEn ?? ''}`.toLowerCase();
+const photoKey = menuShots[item.id] as PhotoKey | undefined;
+const photo = photoKey ? photos[photoKey] : null;
+---
+
+<li class="card" data-item={item.id} data-search={searchKey}>
+  <button
+    type="button"
+    class="card-hit"
+    data-add={item.id}
+    data-options={hasOptions ? 'true' : 'false'}
+    data-label-ar={`${t.addTo.ar} — ${item.name.ar}`}
+    data-label-en={`${t.addTo.en} — ${item.name.en}`}
+    aria-label={`${t.addTo.en} — ${item.name.en}`}
+  >
+    <figure class="card-figure" data-photo-lift={photo ? true : undefined}>
+      {
+        photo ? (
+          <img
+            src={`/photos/${photo.file}`}
+            width={photo.width}
+            height={photo.height}
+            alt={photo.alt.ar}
+            data-alt-ar={photo.alt.ar}
+            data-alt-en={photo.alt.en}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span class="card-figure-empty" aria-hidden="true">
+            <span class="card-mark" />
+          </span>
+        )
+      }
+      {item.signature && (
+        <span class="card-sig">
+          <span data-lang="ar">{t.signature.ar}</span>
+          <span data-lang="en">{t.signature.en}</span>
+        </span>
+      )}
+    </figure>
+
+    <div class="card-body">
+      <div class="card-name">
+        <span class="cn-ar">{item.name.ar}</span>
+        <span class="cn-en">{item.name.en}</span>
+      </div>
+      <div class="card-tail">
+        <span class="card-price tnum">
+          <Riyal />{priceLabel}
+        </span>
+        {item.cals != null && (
+          <span class="card-cals">
+            <span class="tnum">{item.cals}</span>
+            <span data-lang="ar"> {t.cals.ar}</span>
+            <span data-lang="en"> {t.cals.en}</span>
+          </span>
+        )}
+      </div>
+    </div>
+
+    <span class="card-add" aria-hidden="true">+</span>
+  </button>
+</li>
+
+<style>
+  .card { list-style: none; }
+  .card[hidden] { display: none; }
+
+  .card-hit {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    text-align: start;
+    background: var(--color-ink-2);
+    border: 1px solid var(--sand-line-soft);
+    transition: border-color 0.35s var(--ease-drift), transform 0.35s var(--ease-out), background-color 0.35s var(--ease-drift);
+    position: relative;
+  }
+  .card-hit:hover, .card-hit:focus-visible {
+    border-color: var(--sage-line);
+    transform: translateY(-3px);
+    background: var(--color-ink-3);
+  }
+
+  .card-figure {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-ink-3);
+  }
+  .card-figure img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .card-hit:hover .card-figure img { transform: scale(1.05); }
+
+  .card-figure-empty {
+    inline-size: 100%;
+    block-size: 100%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--color-sage) 22%, transparent), transparent 65%),
+      var(--color-ink-3);
+  }
+  .card-mark {
+    inline-size: 2.2rem;
+    block-size: 2.9rem;
+    background-color: var(--color-sage-bright);
+    opacity: 0.5;
+    -webkit-mask: url('/brand/sprig.png') no-repeat center / contain;
+    mask: url('/brand/sprig.png') no-repeat center / contain;
+  }
+
+  .card-sig {
+    position: absolute;
+    inset-block-start: 0.6rem;
+    inset-inline-start: 0.6rem;
+    font-family: var(--font-latin);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    background: var(--color-glow);
+    padding: 0.22rem 0.55rem;
+  }
+  html[dir='rtl'] .card-sig { letter-spacing: 0; text-transform: none; font-family: var(--font-arabic); }
+
+  .card-body { padding: 0.9rem 1rem 1.1rem; flex: 1; }
+
+  .card-name { display: flex; flex-direction: column; gap: 0.12rem; margin-block-end: 0.6rem; }
+  .cn-en { font-family: var(--font-latin); text-transform: uppercase; letter-spacing: 0.06em; }
+  html[lang='ar'] .cn-ar, html[lang='en'] .cn-en {
+    font-size: 1rem; font-weight: 500; color: var(--color-sand-warm); line-height: 1.3;
+  }
+  html[lang='ar'] .cn-en, html[lang='en'] .cn-ar { font-size: 0.74rem; color: var(--sand-faint); }
+  html[lang='en'] .cn-en { order: -1; }
+
+  .card-tail { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+  .card-price {
+    display: inline-flex; align-items: center; gap: 0.18em;
+    font-family: var(--font-latin); font-size: 1.05rem; color: var(--color-glow);
+  }
+  .card-cals { font-size: 0.68rem; letter-spacing: 0.04em; color: var(--sand-faint); }
+
+  .card-add {
+    position: absolute;
+    inset-block-end: 0.8rem;
+    inset-inline-end: 0.8rem;
+    inline-size: 2rem;
+    block-size: 2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--sand-line);
+    background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    backdrop-filter: blur(6px);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--color-sand);
+    transition: background-color 0.3s var(--ease-drift), border-color 0.3s var(--ease-drift);
+  }
+  .card-hit:hover .card-add { background: var(--color-glow); color: var(--color-ink); border-color: var(--color-glow); }
+  .card-hit.just-added .card-add { background: var(--color-glow); color: var(--color-ink); border-color: var(--color-glow); }
+</style>

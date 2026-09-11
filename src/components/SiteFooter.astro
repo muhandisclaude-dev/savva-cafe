@@ -16,22 +16,13 @@ import { venue } from '../data/venue';
 
     <div class="foot-cols">
       <div class="foot-col">
-        <p class="kicker">
-          <span data-lang="ar">{t.visitTitle.ar}</span>
-          <span data-lang="en">{t.visitTitle.en}</span>
-        </p>
-        <p class="foot-line">
-          <span data-lang="ar">{venue.address.ar}</span>
-          <span data-lang="en">{venue.address.en}</span>
-        </p>
+        <p class="kicker"><span data-lang="ar">{t.visitTitle.ar}</span><span data-lang="en">{t.visitTitle.en}</span></p>
+        <p class="foot-line"><span data-lang="ar">{venue.address.ar}</span><span data-lang="en">{venue.address.en}</span></p>
         <a href={`tel:${venue.phone}`} class="foot-line foot-link tnum">{venue.phoneDisplay}</a>
       </div>
 
       <div class="foot-col">
-        <p class="kicker">
-          <span data-lang="ar">تابعنا</span>
-          <span data-lang="en">Follow</span>
-        </p>
+        <p class="kicker"><span data-lang="ar">تابعنا</span><span data-lang="en">Follow</span></p>
         <a href={venue.instagram} class="foot-line foot-link" target="_blank" rel="noopener">Instagram</a>
         <a href={venue.tiktok} class="foot-line foot-link" target="_blank" rel="noopener">TikTok</a>
         <a href={venue.maps} class="foot-line foot-link" target="_blank" rel="noopener">
@@ -51,9 +42,10 @@ import { venue } from '../data/venue';
 
 <style>
   .foot {
+    background: var(--color-ink);
     padding-block: clamp(3rem, 8vh, 5rem) 1.5rem;
     padding-inline: clamp(1.1rem, 4vw, 3rem);
-    border-block-start: 1px solid var(--sand-line);
+    border-block-start: 1px solid var(--sand-line-soft);
   }
 
   .foot-inner {
@@ -66,27 +58,16 @@ import { venue } from '../data/venue';
   }
 
   .foot-brand { display: flex; flex-direction: column; gap: 1.1rem; }
-  /* Тот же случай, что и в первом экране: логотип вставлен через set:html */
-  :global(.foot-mark) { inline-size: min(100%, 13rem); block-size: auto; color: var(--color-sand); opacity: 0.9; }
-  .foot-tagline {
-    margin: 0;
-    max-inline-size: 26ch;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--sand-dim);
-  }
+  :global(.foot-mark) { inline-size: min(100%, 12rem); block-size: auto; color: var(--color-sand); opacity: 0.85; }
+  .foot-tagline { margin: 0; max-inline-size: 26ch; font-size: 0.95rem; line-height: 1.6; color: var(--sand-dim); }
 
-  .foot-cols {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
-    gap: clamp(1.5rem, 4vw, 3rem);
-  }
+  .foot-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: clamp(1.5rem, 4vw, 3rem); }
   .foot-col { display: flex; flex-direction: column; gap: 0.45rem; }
   .foot-col .kicker { margin-block-end: 0.35rem; }
 
   .foot-line { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--sand-dim); }
   .foot-link { transition: color 0.3s var(--ease-drift); }
-  .foot-link:hover { color: var(--color-sand); }
+  .foot-link:hover { color: var(--color-glow); }
 
   .foot-demo {
     max-inline-size: 74rem;
@@ -99,8 +80,4 @@ import { venue } from '../data/venue';
     color: var(--sand-faint);
   }
   html[dir='rtl'] .foot-demo { letter-spacing: 0; text-transform: none; }
-
-  @media (max-width: 860px) {
-    .foot-inner { grid-template-columns: 1fr; }
-  }
 </style>
